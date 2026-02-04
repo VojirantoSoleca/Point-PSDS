@@ -94,11 +94,3 @@ Part segmentation on ShapeNetPart, run:
 cd segmentation
 python main.py --ckpts <path/to/pre-trained/model> --root path/to/data --learning_rate 0.0002 --epoch 300
 ```
-
-<div  align="center">    
- <img src="./figure/vvv.jpg" width = "900"  align=center />
-</div>
-  year={2022},
-  organization={Springer}
-}
-```
