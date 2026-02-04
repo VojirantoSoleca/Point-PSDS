@@ -1,11 +1,8 @@
-# Point-MAE
+# Point-PSDS
 
-## Masked Autoencoders for Point Cloud Self-supervised Learning, [ECCV 2022](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136620591.pdf), [ArXiv](https://arxiv.org/abs/2203.06604)
+## Learning from Geometric Redundancy: Spectral-Guided Masked Modeling for Self-Supervised Point Cloud Representation
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/masked-autoencoders-for-point-cloud-self/3d-point-cloud-classification-on-scanobjectnn)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-scanobjectnn?p=masked-autoencoders-for-point-cloud-self)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/masked-autoencoders-for-point-cloud-self/3d-point-cloud-classification-on-modelnet40)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-modelnet40?p=masked-autoencoders-for-point-cloud-self)
-
-In this work, we present a novel scheme of masked autoencoders for point cloud self-supervised learning, termed as Point-MAE. Our Point-MAE is neat and efficient, with minimal modifications based on the properties of the point cloud. In classification tasks, Point-MAE outperforms all the other self-supervised learning methods on ScanObjectNN and ModelNet40. Point-MAE also advances state-of-the-art accuracies by 1.5%-2.3% in the few-shot learning on ModelNet40. 
+Self-supervised learning (SSL) for point clouds aims to alleviate the dependency on large-scale annotated datasets. Recently, masked modeling has become a dominant paradigm; however, the prevalent random masking strategy ignores intrinsic geometric structures, inefficiently treating complex edges and flat surfaces with equal importance. To address this, we propose Point-PSDS, a novel geometry-aware framework. We introduce Patch Spectral Diffusion Stability (PSDS), a metric utilizing graph spectral diffusion to quantify the structural redundancy of local patches. Distinct from existing methods that mask salient features, we strategically mask the most geometrically redundant regions (i.e., those with the lowest PSDS scores). This strategy compels the network to reconstruct simple surfaces by understanding their surrounding complex structural context, effectively learning robust geometric priors. Furthermore, we integrate a Cross-View Distillation loss within a teacher-student architecture to enhance the view-invariance and semantic consistency of the learned features. Extensive experiments demonstrate that our method achieves state-of-the-art results compared to models of comparable size, establishing new benchmarks on ScanObjectNN and few-shot learning, while maintaining comparable top-tier performance on ModelNet40.
 
 <div  align="center">    
  <img src="./figure/net.jpg" width = "666"  align=center />
@@ -24,8 +21,6 @@ pip install -r requirements.txt
 <details>
 <summary> For Linux Kernel 6.0 or above (e.g. Ubuntu 24)
 </summary>
- 
-Solution from [Sam Cheung](https://github.com/deemoe404).
 
 Please run the following command before installing Chamfer Distance:
 ```
@@ -66,28 +61,13 @@ pip install --upgrade https://github.com/unlimblue/KNN_CUDA/releases/download/0.
 
 We use ShapeNet, ScanObjectNN, ModelNet40 and ShapeNetPart in this work. See [DATASET.md](./DATASET.md) for details.
 
-## 3. Point-MAE Models
-|  Task | Dataset | Config | Acc.| Download|      
-|  ----- | ----- |-----|  -----| -----|
-|  Pre-training | ShapeNet |[pretrain.yaml](./cfgs/pretrain.yaml)| N.A. | [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/pretrain.pth) |
-|  Classification | ScanObjectNN |[finetune_scan_hardest.yaml](./cfgs/finetune_scan_hardest.yaml)| 85.18%| [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/scan_hardest.pth)  |
-|  Classification | ScanObjectNN |[finetune_scan_objbg.yaml](./cfgs/finetune_scan_objbg.yaml)|90.02% | [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/scan_objbg.pth) |
-|  Classification | ScanObjectNN |[finetune_scan_objonly.yaml](./cfgs/finetune_scan_objonly.yaml)| 88.29%| [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/scan_objonly.pth) |
-|  Classification | ModelNet40(1k) |[finetune_modelnet.yaml](./cfgs/finetune_modelnet.yaml)| 93.80%| [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/modelnet_1k.pth) |
-|  Classification | ModelNet40(8k) |[finetune_modelnet_8k.yaml](./cfgs/finetune_modelnet_8k.yaml)| 94.04%| [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/modelnet_8k.pth) |
-| Part segmentation| ShapeNetPart| [segmentation](./segmentation)| 86.1% mIoU| [here](https://github.com/Pang-Yatian/Point-MAE/releases/download/main/part_seg.pth) |
-
-|  Task | Dataset | Config | 5w10s Acc. (%)| 5w20s Acc. (%)| 10w10s Acc. (%)| 10w20s Acc. (%)|     
-|  ----- | ----- |-----|  -----| -----|-----|-----|
-|  Few-shot learning | ModelNet40 |[fewshot.yaml](./cfgs/fewshot.yaml)| 96.3 ± 2.5| 97.8 ± 1.8| 92.6 ± 4.1| 95.0 ± 3.0| 
-
-## 4. Point-MAE Pre-training
-To pretrain Point-MAE on ShapeNet training set, run the following command. If you want to try different models or masking ratios etc., first create a new config file, and pass its path to --config.
+## 3. Pre-training
+To pretrain Point-PSDS on ShapeNet training set, run the following command. If you want to try different models or masking ratios etc., first create a new config file, and pass its path to --config.
 
 ```
 CUDA_VISIBLE_DEVICES=<GPU> python main.py --config cfgs/pretrain.yaml --exp_name <output_file_name>
 ```
-## 5. Point-MAE Fine-tuning
+## 4. Fine-tuning
 
 Fine-tuning on ScanObjectNN, run:
 ```
@@ -115,30 +95,9 @@ cd segmentation
 python main.py --ckpts <path/to/pre-trained/model> --root path/to/data --learning_rate 0.0002 --epoch 300
 ```
 
-## 6. Visualization
-
-Visulization of pre-trained model on ShapeNet validation set, run:
-
-```
-python main_vis.py --test --ckpts <path/to/pre-trained/model> --config cfgs/pretrain.yaml --exp_name <name>
-```
-
 <div  align="center">    
  <img src="./figure/vvv.jpg" width = "900"  align=center />
 </div>
-
-## Acknowledgements
-
-Our codes are built upon [Point-BERT](https://github.com/lulutang0608/Point-BERT), [Pointnet2_PyTorch](https://github.com/erikwijmans/Pointnet2_PyTorch) and [Pointnet_Pointnet2_pytorch](https://github.com/yanx27/Pointnet_Pointnet2_pytorch)
-
-## Reference
-
-```
-@inproceedings{pang2022masked,
-  title={Masked autoencoders for point cloud self-supervised learning},
-  author={Pang, Yatian and Wang, Wenxiao and Tay, Francis EH and Liu, Wei and Tian, Yonghong and Yuan, Li},
-  booktitle={Computer Vision--ECCV 2022: 17th European Conference, Tel Aviv, Israel, October 23--27, 2022, Proceedings, Part II},
-  pages={604--621},
   year={2022},
   organization={Springer}
 }
