@@ -93,8 +93,3 @@ Few-shot learning, run:
 CUDA_VISIBLE_DEVICES=<GPUs> python main.py --config cfgs/fewshot.yaml --finetune_model \
 --ckpts <path/to/pre-trained/model> --exp_name <output_file_name> --way <5 or 10> --shot <10 or 20> --fold <0-9>
 ```
-Part segmentation on ShapeNetPart, run:
-```
-cd segmentation
-python main.py --ckpts <path/to/pre-trained/model> --root path/to/data --learning_rate 0.0002 --epoch 300
-```
