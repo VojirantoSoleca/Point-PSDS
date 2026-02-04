@@ -5,11 +5,11 @@
 Self-supervised learning (SSL) for point clouds aims to alleviate the dependency on large-scale annotated datasets. Recently, masked modeling has become a dominant paradigm; however, the prevalent random masking strategy ignores intrinsic geometric structures, inefficiently treating complex edges and flat surfaces with equal importance. To address this, we propose Point-PSDS, a novel geometry-aware framework. We introduce Patch Spectral Diffusion Stability (PSDS), a metric utilizing graph spectral diffusion to quantify the structural redundancy of local patches. Distinct from existing methods that mask salient features, we strategically mask the most geometrically redundant regions (i.e., those with the lowest PSDS scores). This strategy compels the network to reconstruct simple surfaces by understanding their surrounding complex structural context, effectively learning robust geometric priors. Furthermore, we integrate a Cross-View Distillation loss within a teacher-student architecture to enhance the view-invariance and semantic consistency of the learned features. Extensive experiments demonstrate that our method achieves state-of-the-art results compared to models of comparable size, establishing new benchmarks on ScanObjectNN and few-shot learning, while maintaining comparable top-tier performance on ModelNet40.
 
 <div  align="center">    
- <img src="./figure/pipeline2.jpg" width = "666"  align=center />
+ <img src="./figure/pipeline2.png" width = "666"  align=center />
 </div>
 
 <div  align="center">    
- <img src="./figure/pipeline1.jpg" width = "666"  align=center />
+ <img src="./figure/pipeline1.png" width = "666"  align=center />
 </div>
 
 ## 1. Requirements
